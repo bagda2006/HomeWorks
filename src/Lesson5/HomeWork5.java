@@ -51,8 +51,8 @@ public class HomeWork5 {
 
     public static class Person {
         private String name;
-        private int protection = 0;
-        private int health = 50;
+        private int protection;
+        private int health;
 
         public void setName(String name) {
             this.name = name;
@@ -78,26 +78,29 @@ public class HomeWork5 {
             return health;
         }
 
-        protected Person(int protection, int health){
+        protected Person(String name,int protection, int health){
             this.protection = protection;
             this.health = health;
             this.name = name;
         }
         public Person(String name){
             this.name = name;
+            this.protection = 0;
+            this.health = 50;
         }
         public String announce(){
             String str = String.format("Person %s имеет характеристики: %s здоровья и %s защиты",name,health,protection);
             return str;
         }
         public void takeDamage(int damage) throws Exception{
-            if (damage < 0){
+            if (damage - protection < 0){
                 throw new Exception();
-            }else if(health < 0){
-                throw new PersonDead("Нету здоровья");
-            }
-            else {
-                health = health - (damage - protection);
+            }else {
+                this.health -= (damage - protection);
+                if(this.health < 0){
+                    this.health = 0;
+                    throw new PersonDead("You Dead");
+                }
             }
         }
         public int facePunch(){
@@ -108,9 +111,7 @@ public class HomeWork5 {
 
     public static class Mage extends Person{
         public Mage(String name){
-            super(name);
-            setHealth(100);
-            setProtection(15);
+            super(name,15,100);
         }
         @Override
         public String announce(){
@@ -119,8 +120,8 @@ public class HomeWork5 {
         }
         @Override
         public void takeDamage(int damage) throws Exception {
+            damage -= this.getHealth() % 10;
             super.takeDamage(damage);
-            setHealth(getHealth()+(getHealth()%10));
         }
         public int fireBall(){
            return 45;
@@ -128,20 +129,9 @@ public class HomeWork5 {
     }
 
     public static class Archer extends Person{
-        // Напиши здесь свою реализацию класса Archer (не забудь про наследование от Person)
-      //  Реализовать класс «Archer»
-       // Наследовать класс от «Person»
-      //  Конструктор класса принимает только имя
-      //  Все Лучники имеют 120 здоровья и защиту 12
-      //  Метод(Переопределить) announce - возвращает строку в формате Archer + вызов метода announce у родителя
-       // Метод(Переопределить) takeDamage - вычитает урон из здоровья персонажа
-       // по формуле health - (damage - protection + health % 10) (Случайный дебаф)
-       //         !!! Метод должен вызывать метод takeDamage super-класса
-      //  Метод - Integer shootBow() - стрельба из лука наносит 40 + health % 10 урона
+
         public Archer(String name){
-            super(name);
-            setHealth(120);
-            setProtection(12);
+            super(name,12,120);
         }
         @Override
         public String announce(){
@@ -150,11 +140,11 @@ public class HomeWork5 {
         }
         @Override
         public void takeDamage(int damage) throws Exception{
+            damage += this.getHealth() % 10;
             super.takeDamage(damage);
-            setHealth(getHealth() - (getHealth()%10));
         }
         public int shootBow(){
-            return 40 + getHealth() % 10;
+            return 40 + this.getHealth() % 10;
         }
     }
 
