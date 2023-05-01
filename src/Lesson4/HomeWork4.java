@@ -1,5 +1,8 @@
 package Lesson4;
 
+import Lesson1.HomeWork;
+import Lesson5.HomeWork5;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
