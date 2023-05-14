@@ -1,4 +1,4 @@
-package Upgrade_Level.Lesson2;
+package Upgrade_Level.Lesson2_3;
 
 public class ClassWork2 {
     public static class MyArrayList<E>{
@@ -114,18 +114,23 @@ public class ClassWork2 {
        public boolean add(E element){
             //Добавление в пустой список
            Node currentNode = head;
+           if(head == null){
+               currentNode = (Node) element;
+               head = currentNode;
+           }
            for (; currentNode.next != null; currentNode = currentNode.next) {
                 //Загадка
            }
            currentNode.next = new Node(element);
            return  true;
        }
-       //Добавление по индексу
+       //Вставка
         public void add(int index,E element){
             //Добавление в пустой список
             Node currentNode = getNode(index - 1);
             Node newNode = new Node(element, currentNode.next);
             currentNode.next = newNode;
         }
+
     }
 }
