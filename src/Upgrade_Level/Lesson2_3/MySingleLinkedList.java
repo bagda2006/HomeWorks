@@ -167,6 +167,18 @@ public class MySingleLinkedList<E> {
 
         System.out.println();
     }
-
+    public static void main(String[] args){
+        MySingleLinkedList<Integer> myList = new MySingleLinkedList<>();
+        myList.add(100);//обычное добавление
+        myList.add(101);
+        myList.add(78);
+        myList.add(90);
+        myList.printList();
+        myList.add(151,3);//Добавится 151 на индекс 3(добавление по индексу)
+        myList.removeFirst();//100 - удалится(удаление первого элемента)
+        myList.removeLast();//90 - удалится(удаление последнего элемента)
+        myList.remove(2);//151 - удалится(обычное добавление)
+        myList.printList();//обычное добавление
+    }
 
 }
