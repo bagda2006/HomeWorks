@@ -1,80 +1,119 @@
 package Upgrade_Level.Lesson6;
 
-import java.util.Arrays;
 
-public class MyQueue<V> {
-    private int capacity;
-    int queue[];
-    int front,rear;
+public class MyQueue {
+    int size;
+    int items[];
+    int front, rear;
 
-    public MyQueue(int capacity){
-        this.capacity = capacity;
-        queue = new int[this.capacity];
+    public MyQueue(int size) {
+        this.size = size;
+        items = new int[this.size];
         front = -1;
         rear = -1;
     }
 
-    private void Swap(int first,int second){
-        int a = queue[first];
-        queue[first] = queue[second];
-        queue[second] = a;
+    public static void quickSort(int[] source, int leftBorder, int rightBorder) {
+        int leftMarker = leftBorder;
+        int rightMarker = rightBorder;
+        int pivot = source[(leftMarker + rightMarker) / 2];
+
+        do {
+            while (source[leftMarker] < pivot) {
+                leftMarker++;
+            }
+
+            while (source[rightMarker] > pivot) {
+                rightMarker--;
+            }
+            if (leftMarker <= rightMarker) {
+                if (leftMarker < rightMarker) {
+                    int tmp = source[leftMarker];
+                    source[leftMarker] = source[rightMarker];
+                    source[rightBorder] = tmp;
+                }
+
+                leftMarker++;
+                rightMarker--;
+            }
+        } while (leftMarker <= rightMarker);
+        if (leftMarker < rightBorder) {
+            quickSort(source, leftMarker, rightBorder);
+        }
+        if (leftBorder < rightMarker) {
+            quickSort(source, leftBorder, rightMarker);
+        }
     }
-    public void enQueue(int element){
-        if(rear == capacity - 1){
-            System.out.println("Queue is full");
-        }else {
-            if(front == -1) {
-                front++;
+
+    private boolean isFull() {
+        if (front == 0 && rear == size - 1) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isEmpty() {
+        if (front == -1) {
+            return true;
+        }
+        return false;
+    }
+
+    public void enQueue(int element) {
+        if (isFull()) {
+            System.out.println("Очередь заполнена");
+        } else {
+            if (front == -1) {
+                front = 0;
             }
             rear++;
-            queue[rear] = element;
+            items[rear] = element;
+            quickSort(items,front,rear);
+            System.out.println("Добавлен элемент " + element);
         }
-        for (int i = front; i < rear; i++) {
-            for(int j = rear; j > front; j--){
-                if (queue[j-1] > queue[j]){
-                    Swap(j-1,j);
-                }
+    }
+
+    public int deQueue() {
+        int element;
+        if (isEmpty()) {
+            System.out.println("Очередь пустая");
+            return (-1);
+        } else {
+            element = items[front];
+            if (front >= rear) {
+                front = -1;
+                rear = -1;
+            } else {
+                front++;
             }
+            System.out.println("Удален элемент " + element);
+            return element;
         }
     }
 
-    public int peek(){
-        if (front == -1){
-            System.out.println("Queue is empty");
-            System.exit(-1);
+    public void display() {
+        int i;
+        if (isEmpty()) {
+            System.out.println("Очередь пустая");
+        } else {
+            System.out.println("Индекс FRONT " + front);
+            System.out.println("Элементы ->");
+            for (i = front; i <= rear; i++) {
+                System.out.println(items[i] + " ");
+            }
+            System.out.println("Индекс REAR " + rear);
         }
-        return queue[front];
     }
 
-    public int pop(){
-        int temp = 0;
-        if (front == -1){
-            System.out.println("Queue is empty!");
-            System.exit(-1);
-        }else if (front == rear){
-            temp = queue[front];
-            front = rear = -1;
-        }else{
-            temp = queue[front];
-            front++;
-        }
-        return temp;
-    }
-
-    public int getFront(){
-        return queue[front];
-    }
-
-    public int getRear(){
-        return queue[rear];
-    }
-
-    public String toString(){
-        String str = "[";
-        for (int i = front; i < rear ; i++) {
-            str = str + queue[i] + ", ";
-        }
-        str = str + queue[rear] + "] ";
-        return str;
+    public static void main(String[] args) {
+        MyQueue q = new MyQueue(5);
+        q.deQueue();
+        q.enQueue(4);//добавление элемента в очередь
+        q.enQueue(51);
+        q.enQueue(16);
+        q.enQueue(73);
+        q.enQueue(8);
+        q.deQueue();//удаление элемента
+        q.display();
     }
 }
