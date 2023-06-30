@@ -1,11 +1,11 @@
 package Upgrade_Level.Lesson5;
 
-public class Pair<K,V> {
+public class MyKeyValueEntry<K,V> {
     private K key;
     private V value;
 
 
-    public Pair(K key, V value){
+    public MyKeyValueEntry(K key, V value){
         this.key = key;
         this.value = value;
     }

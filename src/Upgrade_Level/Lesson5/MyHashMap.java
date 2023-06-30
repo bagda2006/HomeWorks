@@ -1,71 +1,87 @@
 package Upgrade_Level.Lesson5;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
 public class MyHashMap<K,V> {
     private int CAPACITY = 10;
-    private Bucket[] buckets;
+    private MyMapBucket[] bucket;
     private int size;
+
     public MyHashMap(){
-        buckets = new Bucket[CAPACITY];
+        this.bucket = new MyMapBucket[CAPACITY];
+    }
+
+    public int size(){
+        return size;
     }
 
     private int getHash(K key){
-        //0xfffffff == Math.abs()
-        return (key.hashCode()  & 0xfffffff)% CAPACITY;
+        return key.hashCode() & (CAPACITY - 1);
     }
 
-    private Pair getPair(K key){
+    private MyKeyValueEntry getEntry(K key){
         int hash = getHash(key);
-        if(buckets[hash] == null) return null;
-        for (int i = 0; i < buckets[hash].getPairs().size(); i++) {
-            Pair<K,V> curPair = buckets[hash].getPairs().get(i);
-            if(curPair.getKey().equals(key)){
-                return curPair;
+        for(int i = 0;i < bucket[hash].getEntries().size();i++){
+            MyKeyValueEntry myKeyValueEntry = bucket[hash].getEntries().get(i);
+            if (myKeyValueEntry.getKey().equals(key)){
+                return myKeyValueEntry;
             }
         }
         return null;
     }
 
-    public V get(K key){
-        Pair curPair = getPair(key);
-        if(curPair == null) return null;
-       else return (V) getPair(key).getValue();
+    public boolean containsKey(K key){
+        int hash = getHash(key);
+        return !(Objects.isNull(bucket[hash]) || Objects.isNull((getEntry(key))));
     }
 
-
-    public boolean contains(K key) {
-        if(getPair(key) != null)return true;
-        else return false;
-    }
-
-    public void put(K key, V value){
-        if (contains(key)){
-            Pair curPair = getPair(key);
-            curPair.setValue(value);
-        }else {
+    public V put(K key, V value){
+        if(containsKey(key)){
+            MyKeyValueEntry entry = getEntry(key);
+            V temp = (V) entry.getValue();
+            entry.setValue(value);
+            return temp;
+        }else{
             int hash = getHash(key);
-            if(buckets[hash] == null){
-                buckets[hash] = new Bucket();
+            if(bucket[hash] == null){
+                bucket[hash] = new MyMapBucket();
             }
-            buckets[hash].add(new Pair<>(key, value));
+            bucket[hash].addEntry(new MyKeyValueEntry<>(key,value));
             size++;
         }
-    }
-    public void remove(K key){
-        if (contains(key)){
-            int hash = getHash(key);
-            buckets[hash].remove(getPair(key));
-            size--;
-        }
-    }
-    public void print(){
-        for (int i = 0; i < CAPACITY; i++) {
-            if(buckets[i] != null){
-                System.out.println("Bucket №" + i);
-                for (int j = 0; j < buckets[i].getPairs().size(); j++) {
-                    System.out.println(buckets[i].getPairs().get(j).getValue());
-                }
-            }
-        }
+        return null;
     }
 
+    public V get(K key){
+        return containsKey(key) ? (V) getEntry(key).getValue() : null;
+    }
+
+    public V remove(K key){
+        if(containsKey(key)){
+            V temp = get(key);
+            int hash = getHash(key);
+            bucket[hash].removeEntry(getEntry(key));
+            size--;
+            return temp;
+        }
+        return null;
+    }
+
+
+    public static void main(String[] args) {
+        MyHashMap<Integer,String> myHashMap = new MyHashMap<>();
+        myHashMap.put(1,"Hello");//Добавление элемента
+        myHashMap.put(2,"Yup");
+        myHashMap.put(3,"Bye");
+        myHashMap.put(4,"Lol");
+        myHashMap.put(5,"Hi");
+        System.out.println(myHashMap.size());//размер hashmap
+        System.out.println(myHashMap.get(4));//вытаскиваем элемент с ключом 4
+        System.out.println(myHashMap.remove(2));//удаляем элемент с ключем 2
+        System.out.println(myHashMap.size());
+        System.out.println(myHashMap.get(3));
+        System.out.println(myHashMap.containsKey(1));//проверяем есть ли в hshmap эл-т с ключем 1
+    }
 }
